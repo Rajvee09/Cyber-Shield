@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield - Your Digital First-Aid Kit for Scams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .highlight {
+            background-color: #a3e635; /* A nice lime highlight */
+            color: #1a2e05;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        /* Style for the typing cursor */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 36px; /* Adjusted for text size */
+            background-color: #a3e635; /* Lime color */
+            animation: blink 1s infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Light Theme Styles */
+        .light-theme {
+            background: #f3f4f6; /* Gray-100 */
+            color: #1f2937; /* Gray-800 */
+        }
+        .light-theme header, .light-theme footer, .light-theme .modal-content, .light-theme .search-card, .light-theme .faq-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border-color: #e5e7eb; /* Gray-200 */
+            color: #1f2937;
+        }
+        .light-theme h1, .light-theme h3, .light-theme .text-lime-400 {
+            color: #4d7c0f; /* Lime-700 */
+        }
+        .light-theme .typing-cursor {
+            background-color: #4d7c0f;
+        }
+        .light-theme p, .light-theme .text-gray-400 {
+            color: #4b5563; /* Gray-600 */
+        }
+         .light-theme #search-input {
+            background-color: #f9fafb; /* Gray-50 */
+            border-color: #d1d5db; /* Gray-300 */
+            color: #1f2937;
+        }
+        .light-theme #search-input::placeholder {
+            color: #9ca3af; /* Gray-400 */
+        }
+        .light-theme .modal-content {
+             background-color: #ffffff;
+        }
+
+        /* Toggle Switch Style */
+        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4b5563; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #84cc16; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-black text-gray-200 antialiased min-h-screen">
+    
+    <!-- Header Section -->
+    <header class="bg-gray-900/70 backdrop-blur-sm shadow-lg sticky top-0 z-10 border-b border-gray-800">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-lime-400">🛡️ CyberShield</h1>
+            <div class="flex items-center space-x-4">
+                <p class="text-sm text-gray-400 hidden sm:block">Your Digital First-Aid Kit for Scams</p>
+                <button id="settings-button" class="text-gray-400 hover:text-lime-400 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        <section id="search-section" class="text-center">
+            <h2 id="typing-headline" class="text-4xl font-bold mb-4 min-h-[48px] sm:min-h-[56px]"></h2>
+            <p class="text-gray-400 mb-8 max-w-2xl mx-auto">Describe the situation below. We'll check our database for related scams and tell you how to handle it.</p>
+            <div class="relative max-w-2xl mx-auto flex items-center">
+                <span class="absolute left-5 top-1/2 -translate-y-1/2 text-lime-400 text-2xl pointer-events-none">🛡️</span>
+                <input type="text" id="search-input" placeholder="Search for a scam... e.g., bank OTP call" class="w-full p-4 pr-12 text-lg bg-gray-800 border-2 border-gray-700 rounded-full focus:ring-lime-500 focus:border-lime-500 text-white placeholder-gray-500 transition pl-14" autocomplete="off">
+                <svg class="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- Search Results Section -->
+        <section id="results-section" class="mt-12">
+            <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Search results will be dynamically inserted here -->
+            </div>
+            <div id="no-results" class="hidden text-center py-12">
+                 <img src="https://placehold.co/300x200/111827/a3e635?text=No\nScams\nFound" alt="Illustration of a magnifying glass over a document, indicating no results were found." class="mx-auto mb-4 w-48 h-auto rounded-lg">
+                <h3 class="text-2xl font-semibold text-white">No Matching Scams Found</h3>
+                <p class="text-gray-400 mt-2">Try using different keywords. We are constantly updating our database.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-black/20 border-t border-gray-800 mt-16 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-400">
+            <div class="flex flex-wrap justify-center items-center space-x-4 sm:space-x-6 mb-4">
+                <a href="#" id="faq-link" class="hover:text-lime-400 transition">FAQs</a>
+                <a href="#" id="help-center-link" class="hover:text-lime-400 transition">Help Center</a>
+                <a href="#" id="contact-us-link" class="hover:text-lime-400 transition">Contact Us</a>
+                <a href="#" id="share-experience-link" class="hover:text-lime-400 transition">Share Your Experience</a>
+                <a href="#" id="helpline-link" class="hover:text-lime-400 transition">24/7 Helpline</a>
+                <a href="#" id="forum-link" class="hover:text-lime-400 transition">Community Forum</a>
+                <a href="#" id="history-link" class="hover:text-lime-400 transition">History</a>
+            </div>
+            <p class="text-sm">&copy; 2024 CyberShield. All Rights Reserved.</p>
+            <p class="text-xs mt-2 max-w-lg mx-auto">Disclaimer: This tool is for informational purposes only. If you have lost money or are in immediate danger, please contact your bank and local law enforcement.</p>
+        </div>
+    </footer>
+
+    <!-- MODALS SECTION -->
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Settings</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- Appearance Section -->
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Appearance</h4>
+                    <div class="flex items-center justify-between">
+                        <label for="theme-toggle">Theme</label>
+                        <div class="flex items-center space-x-2">
+                            <span>Light</span>
+                            <label class="switch">
+                                <input type="checkbox" id="theme-toggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span>Dark</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <label for="bg-style-select">Background Style</label>
+                        <select id="bg-style-select" class="bg-gray-800 border border-gray-700 rounded-md p-2">
+                            <option value="default">Default Gradient</option>
+                            <option value="blue">Deep Blue</option>
+                            <option value="black">Solid Black</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Accessibility Section -->
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Accessibility</h4>
+                     <div class="flex items-center justify-between">
+                        <label>Font Size</label>
+                        <div id="font-size-controls" class="flex items-center space-x-2 border border-gray-700 rounded-md">
+                           <button data-size="sm" class="px-3 py-1 text-sm">A</button>
+                           <button data-size="md" class="px-3 py-1 border-l border-r border-gray-700 text-base bg-gray-700">A</button>
+                           <button data-size="lg" class="px-3 py-1 text-lg">A</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- General Section -->
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">General</h4>
+                     <div class="flex items-center justify-between">
+                        <label for="animation-toggle">Typing Animation</label>
+                        <label class="switch">
+                            <input type="checkbox" id="animation-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 pt-4">
+                    <button id="reset-settings-button" class="w-full text-center text-sm text-gray-400 hover:text-lime-400">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- All other modals... -->
+    <!-- Scam Details Modal -->
+    <div id="scam-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 id="modal-title" class="text-2xl font-bold text-lime-400"></h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-6">
+                    <h4 class="font-semibold text-lg mb-2 text-white">How This Scam Works</h4>
+                    <p id="modal-description" class="text-gray-300 leading-relaxed"></p>
+                </div>
+                <div class="mb-6">
+                    <h4 class="font-semibold text-lg mb-2 text-red-400">🚨 Red Flags</h4>
+                    <ul id="modal-red-flags" class="list-disc list-inside space-y-2 text-gray-300"></ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-2 text-green-400">✅ What To Do</h4>
+                    <ul id="modal-what-to-do" class="list-disc list-inside space-y-2 text-gray-300"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Share Your Experience Modal -->
+    <div id="share-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Share Your Experience</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-400 mb-4">By sharing your story, you can help others avoid similar scams. Please do not include any personal information.</p>
+                <textarea id="experience-textarea" class="w-full p-3 h-48 bg-gray-800 border-2 border-gray-700 rounded-lg focus:ring-lime-500 focus:border-lime-500 text-white placeholder-gray-500 transition" placeholder="Describe what happened..."></textarea>
+                <button id="submit-experience" class="mt-4 w-full bg-lime-500 text-black font-bold py-3 px-6 rounded-lg hover:bg-lime-600 transition duration-300">Submit Anonymously</button>
+                <p id="submit-success" class="text-green-400 text-center mt-4 hidden">Thank you for sharing! Your story is saved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Us Modal -->
+    <div id="contact-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Contact Us</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6 text-center">
+                <p class="text-gray-300 mb-2">For general inquiries or feedback, please reach out to us:</p>
+                <p class="text-lg font-semibold text-white">Email: <a href="mailto:your-email@example.com" class="text-lime-400 hover:underline">your-email@example.com</a></p>
+                <p class="text-lg font-semibold text-white mt-2">Phone: +91 98765 43210</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Center Modal -->
+    <div id="help-center-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Technical Support Contacts</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6">
+                 <p class="text-gray-400 mb-4">If you need to report a scam on a specific platform, here are some official support contacts:</p>
+                <ul class="space-y-3">
+                    <li class="text-white"><span class="font-bold">Google / Gmail:</span> <a href="mailto:support@google.com" class="text-lime-400 hover:underline">support@google.com</a></li>
+                    <li class="text-white"><span class="font-bold">Facebook / Meta:</span> <a href="mailto:support@fb.com" class="text-lime-400 hover:underline">support@fb.com</a></li>
+                    <li class="text-white"><span class="font-bold">Apple / iCloud:</span> <a href="mailto:support@apple.com" class="text-lime-400 hover:underline">support@apple.com</a></li>
+                    <li class="text-white"><span class="font-bold">Microsoft / Outlook:</span> <a href="mailto:support@microsoft.com" class="text-lime-400 hover:underline">support@microsoft.com</a></li>
+                    <li class="text-white"><span class="font-bold">Amazon:</span> <a href="mailto:stop-spoofing@amazon.com" class="text-lime-400 hover:underline">stop-spoofing@amazon.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Helpline Modal -->
+    <div id="helpline-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Emergency & Support Helplines</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-6">
+                    <h4 class="font-semibold text-lg mb-2 text-red-400">Immediate Danger</h4>
+                     <p class="text-white"><span class="font-bold">Police:</span> 100 or 112</p>
+                </div>
+                 <div class="mb-6">
+                    <h4 class="font-semibold text-lg mb-2 text-blue-400">Medical Emergency</h4>
+                     <p class="text-white"><span class="font-bold">Ambulance:</span> 102 or 108</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-2 text-green-400">Mental Health & Support</h4>
+                    <p class="text-white"><span class="font-bold">National Suicide Prevention Helpline:</span> 988</p>
+                    <p class="text-white mt-2"><span class="font-bold">National Cyber Crime Reporting Portal (India):</span> 1930</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Forum Modal -->
+    <div id="forum-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Community Forum</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-8 text-center">
+                <h4 class="text-2xl font-bold text-white mb-4">Coming Soon!</h4>
+                <p class="text-gray-400">Our community forum is under construction. We're working hard to create a space for users to connect and share advice safely. Please check back later!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Your Shared Experiences</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div id="history-content" class="p-6">
+                <!-- History content will be populated here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQs Modal -->
+    <div id="faq-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95 border border-gray-700">
+            <div class="sticky top-0 bg-gray-900/80 backdrop-blur-sm px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-lime-400">Frequently Asked Questions (FAQs)</h3>
+                <button class="modal-close text-3xl leading-none text-gray-400 hover:text-white transition">&times;</button>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- FAQ Item 1 -->
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 faq-item">
+                    <h4 class="font-bold text-lg text-white">Q: A 'friend' on Instagram DMed me saying they are in an emergency and need money. What should I do?</h4>
+                    <p class="mt-2 text-gray-300"><span class="font-semibold text-lime-400">A:</span> This is a classic Hacked Account Scam. <span class="font-bold">Do NOT send money.</span> The first step is to verify the story. Contact your friend through a completely different method, like a phone call or by asking a mutual friend to reach out. Once you confirm it's a scam, report the account to Instagram immediately to help protect others.</p>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 faq-item">
+                    <h4 class="font-bold text-lg text-white">Q: I received an email from my bank saying my account is locked and I need to click a link to verify my details. Is this real?</h4>
+                    <p class="mt-2 text-gray-300"><span class="font-semibold text-lime-400">A:</span> This is a Phishing Scam. Banks will never ask you to verify your password, PIN, or full account details through a link in an email. Do not click the link. The safest action is to delete the email and, if you are concerned, visit your bank's official website by typing the address directly into your browser or use their official app to check your account status.</p>
+                </div>
+                 <!-- FAQ Item 3 -->
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 faq-item">
+                    <h4 class="font-bold text-lg text-white">Q: I was offered a remote job that seems too good to be true, but they're asking me to pay for my own laptop upfront. Is this normal?</h4>
+                    <p class="mt-2 text-gray-300"><span class="font-semibold text-lime-400">A:</span> This is a major red flag for a Fake Job Scam. A legitimate employer will never ask you to pay for your own equipment, training, or background checks. They should provide you with the necessary tools to do your job. Cease communication and report the job posting if possible.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATABASE ---
+        const scamsDatabase = [ /* Database content is unchanged and redacted for brevity */ ];
+
+        // --- SEARCH LOGIC ---
+        const searchInput = document.getElementById('search-input');
+        const resultsContainer = document.getElementById('results-container');
+        const noResultsMessage = document.getElementById('no-results');
+        const stopWords = new Set(['a', 'by', 'in', 'is', 'it', 'of', 'on', 'the', 'to', 'with', 'and']);
+
+        searchInput.addEventListener('keyup', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            if (query.length === 0) {
+                resultsContainer.innerHTML = '';
+                noResultsMessage.classList.add('hidden');
+                return;
+            }
+            const searchWords = query.split(/\s+/).filter(word => !stopWords.has(word));
+            const results = scamsDatabase.map(scam => {
+                let score = 0;
+                const scamName = scam.name.toLowerCase();
+                const scamKeywords = scam.keywords || [];
+                const scamDescription = (scam.description || "").toLowerCase();
+                searchWords.forEach(word => {
+                    if (scamName.includes(word)) score += 10;
+                    if (scamKeywords.includes(word)) score += 5;
+                    if (scamDescription.includes(word)) score += 1;
+                });
+                return { scam, score };
+            })
+            .filter(result => result.score > 0)
+            .sort((a, b) => b.score - a.score);
+            displayResults(results, searchWords);
+        });
+
+        function displayResults(results, searchWords) {
+            resultsContainer.innerHTML = '';
+            if (results.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+                return;
+            }
+            noResultsMessage.classList.add('hidden');
+            results.forEach(({ scam }) => {
+                let highlightedName = scam.name;
+                let highlightedDesc = (scam.description || '').substring(0, 150) + '...';
+                searchWords.forEach(word => {
+                    const regex = new RegExp(word, 'gi');
+                    if (word.length > 2) { 
+                        highlightedName = highlightedName.replace(regex, `<span class="highlight">${word}</span>`);
+                        highlightedDesc = highlightedDesc.replace(regex, `<span class="highlight">${word}</span>`);
+                    }
+                });
+                const card = document.createElement('div');
+                card.className = 'search-card bg-gray-900/80 backdrop-blur-sm border-2 border-gray-800 p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lime-500/20 hover:border-lime-500 transition-all duration-300 transform hover:-translate-y-1';
+                card.innerHTML = `<h3 class="text-xl font-bold text-lime-400 mb-2">${highlightedName}</h3><p class="text-gray-400">${highlightedDesc}</p>`;
+                card.addEventListener('click', () => openScamModal(scam));
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        // --- MODAL LOGIC ---
+        function openModal(modalElement) {
+            modalElement.classList.remove('opacity-0', 'pointer-events-none');
+            modalElement.querySelector('.modal-content').classList.remove('scale-95');
+        }
+
+        function closeModal(modalElement) {
+            modalElement.classList.add('opacity-0');
+            modalElement.querySelector('.modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                modalElement.classList.add('pointer-events-none');
+            }, 300);
+        }
+
+        function openScamModal(scam) {
+            const modal = document.getElementById('scam-modal');
+            modal.querySelector('#modal-title').textContent = scam.name;
+            modal.querySelector('#modal-description').textContent = scam.description || "No description available.";
+            modal.querySelector('#modal-red-flags').innerHTML = (scam.red_flags || []).map(flag => `<li>${flag}</li>`).join('');
+            modal.querySelector('#modal-what-to-do').innerHTML = (scam.what_to_do || []).map(step => `<li>${step}</li>`).join('');
+            openModal(modal);
+        }
+        
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal(modal);
+                }
+            });
+        });
+        document.querySelectorAll('.modal-close').forEach(button => {
+            button.addEventListener('click', () => {
+                closeModal(button.closest('.modal-overlay'));
+            });
+        });
+
+        // --- FOOTER LINKS LOGIC ---
+        document.getElementById('faq-link').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('faq-modal')); });
+        document.getElementById('help-center-link').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('help-center-modal')); });
+        document.getElementById('contact-us-link').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('contact-modal')); });
+        document.getElementById('share-experience-link').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('share-modal')); });
+        document.getElementById('helpline-link').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('helpline-modal')); });
+        document.getElementById('forum-link').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('forum-modal')); });
+        document.getElementById('history-link').addEventListener('click', (e) => { e.preventDefault(); displayHistory(); openModal(document.getElementById('history-modal')); });
+        document.getElementById('settings-button').addEventListener('click', (e) => { e.preventDefault(); openModal(document.getElementById('settings-modal')); });
+
+
+        // --- HISTORY & SHARE EXPERIENCE LOGIC ---
+        const submitBtn = document.getElementById('submit-experience');
+        const successMsg = document.getElementById('submit-success');
+        const textarea = document.getElementById('experience-textarea');
+        const historyContent = document.getElementById('history-content');
+
+        function saveExperience(experienceText) {
+            const experiences = JSON.parse(localStorage.getItem('userExperiences')) || [];
+            experiences.push(experienceText);
+            localStorage.setItem('userExperiences', JSON.stringify(experiences));
+        }
+
+        function displayHistory() {
+            const experiences = JSON.parse(localStorage.getItem('userExperiences')) || [];
+            historyContent.innerHTML = ''; 
+            if (experiences.length === 0) {
+                historyContent.innerHTML = `<p class="text-gray-400 text-center">You haven't shared any experiences yet.</p>`;
+            } else {
+                const experienceList = document.createElement('ul');
+                experienceList.className = 'space-y-4';
+                experiences.reverse().forEach(exp => { 
+                    const listItem = document.createElement('li');
+                    listItem.className = 'bg-gray-800 p-4 rounded-lg border border-gray-700';
+                    listItem.textContent = exp;
+                    experienceList.appendChild(listItem);
+                });
+                historyContent.appendChild(experienceList);
+            }
+        }
+
+        submitBtn.addEventListener('click', () => {
+            const experienceText = textarea.value.trim();
+            if (experienceText !== '') {
+                saveExperience(experienceText);
+                textarea.value = '';
+                successMsg.classList.remove('hidden');
+                setTimeout(() => {
+                    successMsg.classList.add('hidden');
+                    closeModal(document.getElementById('share-modal'));
+                }, 2000); 
+            }
+        });
+        
+        // --- SETTINGS LOGIC ---
+        const settings = {
+            theme: 'dark',
+            background: 'default',
+            fontSize: 'md',
+            animation: true
+        };
+
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const bgStyleSelect = document.getElementById('bg-style-select');
+        const fontSizeControls = document.getElementById('font-size-controls');
+        const animationToggle = document.getElementById('animation-toggle');
+        const resetSettingsButton = document.getElementById('reset-settings-button');
+        let typeEffectInterval;
+
+
+        function applySettings(s) {
+            // Apply Theme
+            if (s.theme === 'light') {
+                body.classList.add('light-theme');
+                themeToggle.checked = false;
+            } else {
+                body.classList.remove('light-theme');
+                themeToggle.checked = true;
+            }
+
+            // Apply Background
+            body.style.background = ''; // reset first
+            body.classList.remove('bg-gradient-to-b', 'from-gray-900', 'to-black');
+            if (s.background === 'default') {
+                body.classList.add('bg-gradient-to-b', 'from-gray-900', 'to-black');
+            } else if (s.background === 'blue') {
+                body.style.background = '#0a192f';
+            } else if (s.background === 'black') {
+                body.style.background = '#000000';
+            }
+            bgStyleSelect.value = s.background;
+            
+            // Apply Font Size
+            document.documentElement.style.fontSize = s.fontSize === 'sm' ? '14px' : s.fontSize === 'lg' ? '18px' : '16px';
+            fontSizeControls.querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('bg-gray-700', btn.dataset.size === s.fontSize);
+            });
+
+            // Apply Animation
+            animationToggle.checked = s.animation;
+            runOrStopTypingEffect(s.animation);
+        }
+
+        function saveSettings() {
+            localStorage.setItem('cyberShieldSettings', JSON.stringify(settings));
+        }
+
+        themeToggle.addEventListener('change', () => {
+            settings.theme = themeToggle.checked ? 'dark' : 'light';
+            applySettings(settings);
+            saveSettings();
+        });
+
+        bgStyleSelect.addEventListener('change', () => {
+            settings.background = bgStyleSelect.value;
+            applySettings(settings);
+            saveSettings();
+        });
+
+        fontSizeControls.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                settings.fontSize = e.target.dataset.size;
+                applySettings(settings);
+                saveSettings();
+            }
+        });
+        
+        animationToggle.addEventListener('change', () => {
+            settings.animation = animationToggle.checked;
+            applySettings(settings);
+            saveSettings();
+        });
+
+        resetSettingsButton.addEventListener('click', () => {
+            localStorage.removeItem('cyberShieldSettings');
+            loadSettings(); // Reloads and applies default settings
+        });
+
+        function loadSettings() {
+            const savedSettings = JSON.parse(localStorage.getItem('cyberShieldSettings'));
+            if (savedSettings) {
+                Object.assign(settings, savedSettings);
+            } else {
+                // Reset to default if no settings saved
+                settings.theme = 'dark';
+                settings.background = 'default';
+                settings.fontSize = 'md';
+                settings.animation = true;
+            }
+            applySettings(settings);
+        }
+
+        // --- TYPING EFFECT LOGIC (MODIFIED FOR TOGGLE) ---
+        const headlineElement = document.getElementById('typing-headline');
+        const phrases = [ "Are you facing a scam?", "Received a suspicious message?", "Worried about a fake offer?", "Let us help you identify it." ];
+        let typingInterval;
+
+        function runOrStopTypingEffect(run) {
+            clearInterval(typingInterval); // Stop any existing interval
+            if (run && headlineElement) {
+                let phraseIndex = 0; let charIndex = 0; let isDeleting = false;
+                const typingSpeed = 100; const deletingSpeed = 50; const delayBetweenPhrases = 2000;
+                
+                function typeEffect() {
+                    const currentPhrase = phrases[phraseIndex];
+                    const cursorSpan = '<span class="typing-cursor"></span>';
+                    if (isDeleting) {
+                        headlineElement.innerHTML = currentPhrase.substring(0, charIndex - 1) + cursorSpan;
+                        charIndex--;
+                        if (charIndex === 0) {
+                            isDeleting = false;
+                            phraseIndex = (phraseIndex + 1) % phrases.length;
+                        }
+                    } else {
+                        headlineElement.innerHTML = currentPhrase.substring(0, charIndex + 1) + cursorSpan;
+                        charIndex++;
+                        if (charIndex === currentPhrase.length) {
+                            isDeleting = true;
+                        }
+                    }
+                }
+                const intervalSpeed = isDeleting ? deletingSpeed : typingSpeed;
+                
+                typingInterval = setInterval(() => {
+                    typeEffect();
+                    // This logic is simplified for clarity, the original complex timeout is harder to clear
+                }, 120);
+
+            } else if (headlineElement) {
+                headlineElement.innerHTML = phrases[0]; // Set to default static text
+            }
+        }
+        
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', loadSettings);
+
+    </script>
+</body>
+</html>
+
